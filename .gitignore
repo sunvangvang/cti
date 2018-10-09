@@ -24,3 +24,18 @@ hs_err_pid*
 
 # vscode workspace
 /vscode/
+
+# .classpath
+.classpath
+
+# .project
+.project
+
+# .vscode/
+.vscode/
+
+# target/
+/target/
+
+# .settings/
+.settings/
