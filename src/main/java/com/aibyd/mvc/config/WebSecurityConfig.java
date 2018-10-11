@@ -38,21 +38,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private RabcFilterSecurityInterceptor rabcFilterSecurityInterceptor;
 
 	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		super.configure(auth);
+	}
+
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers("/css/**", "/font-awesome/**", "/fonts/**", "/layui/**", "/img/**", "/js/**",
-						"/editor/**", "/login")
-				.permitAll().anyRequest().authenticated()
-				.and().formLogin().loginPage("/login")
-				.usernameParameter("username")
-				.passwordParameter("password")
-				.defaultSuccessUrl("/index")
-				// .successHandler(loginSuccessHandler())
-				.and().headers().frameOptions().sameOrigin()
-				.and().logout().addLogoutHandler(logoutHandler())
-				.logoutSuccessUrl("/login").logoutSuccessHandler(logoutSuccessHandler()).invalidateHttpSession(true)
-				.and().rememberMe().tokenValiditySeconds(1209600)
-				.and().csrf().disable();
+						"/editor/**", "/login", "/auth")
+					.permitAll().anyRequest().authenticated()
+					.and()
+				.formLogin().loginPage("/login")
+					.loginProcessingUrl("/auth")
+					.usernameParameter("username")
+					.passwordParameter("password")
+					.defaultSuccessUrl("/index")
+					.and()
+				.headers()
+					.frameOptions()
+					.sameOrigin()
+					.and()
+				.logout()
+					.addLogoutHandler(logoutHandler())
+					.logoutSuccessUrl("/login")
+					.logoutSuccessHandler(logoutSuccessHandler())
+					.invalidateHttpSession(true)
+					.and()
+				.rememberMe()
+					.tokenValiditySeconds(1209600)
+					.and()
+				.csrf()
+					.disable();
 		http.addFilterBefore(rabcFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 	}
 
