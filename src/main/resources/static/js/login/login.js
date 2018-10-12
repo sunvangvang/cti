@@ -14,12 +14,32 @@ layui.use(["form", "layer", "jquery"], function() {
         $(this).text("登录中...").attr("disabled", "disabled").addClass("layui-disabled");
         var param = data.field;
         var dataJS = JSON.stringify(param);
-        console.log(dataJS);
         $.post(
             "/auth",
             $("#login_form").serialize(),
             function(res) {
                 console.log(res);
+                var result = JSON.parse(res);
+                var status = result.status;
+                console.log(status);
+                var token = result.token;
+                console.log(token);
+                if("200" == status) {
+                    window.location.href = "/index";
+                //     $.ajax({
+                //         url: "/index",
+                //         type: "get",
+                //         dataType: "html",
+                //         timeout: 10000,
+                //         beforeSend: function(request) {
+                //             request.setRequestHeader("Authorization", token);
+                //         },
+                //         success: function(res) {
+                //             console.log(res);
+                //         }
+                //     });
+
+                }
             }
         );
         /*

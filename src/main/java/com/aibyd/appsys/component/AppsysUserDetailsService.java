@@ -1,19 +1,19 @@
-package com.aibyd.appsys.service;
+package com.aibyd.appsys.component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.aibyd.appsys.domain.AppsysUser;
+import com.aibyd.appsys.bean.AppsysUserDetails;
+import com.aibyd.appsys.service.AppsysUserService;
+import com.aibyd.appsys.service.AppsysUserRoleService;
 
 @Component
 public class AppsysUserDetailsService implements UserDetailsService {
@@ -28,12 +28,13 @@ public class AppsysUserDetailsService implements UserDetailsService {
 	// private AppsysMenuRoleService menuRoleService;
 
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+	public AppsysUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		AppsysUserDetails userDetails = new AppsysUserDetails();
 		// SysUser对应数据库中的用户表，是最终存储用户和密码的表，可自定义
 		// 本例使用SysUser中的name作为用户名:
 		AppsysUser user = userService.findUserByName(userName);
 		// Set<Long> permissionSet = new HashSet<Long>();
-		List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 		if (user == null) {
 			throw new UsernameNotFoundException("UserName " + userName + " not found");
 		} else {
@@ -45,7 +46,11 @@ public class AppsysUserDetailsService implements UserDetailsService {
 				}
 			}
 		}
-		return new User(user.getUserName(), user.getPasswd(), grantedAuthorities);
+		userDetails.setUsername(user.getUserName());
+		userDetails.setPassword(user.getPasswd());
+		userDetails.setAuthorities(grantedAuthorities);
+		return userDetails;
+		// return new User(user.getUserName(), user.getPasswd(), grantedAuthorities);
 	}
 
 	// public UserDetails loadUserByUsername(String username) {

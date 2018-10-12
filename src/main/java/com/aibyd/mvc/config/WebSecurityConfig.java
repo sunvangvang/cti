@@ -15,15 +15,23 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import com.aibyd.appsys.filter.RabcFilterSecurityInterceptor;
-import com.aibyd.appsys.service.AppsysUserDetailsService;
+import com.aibyd.appsys.component.AppsysAccessDeniedHandler;
+import com.aibyd.appsys.component.AppsysAuthenticationEntryPoint;
+import com.aibyd.appsys.component.AppsysAuthenticationFailureHandler;
+import com.aibyd.appsys.component.AppsysAuthenticationSuccessHandler;
+import com.aibyd.appsys.component.AppsysAuthenticationTokenFilter;
+import com.aibyd.appsys.component.AppsysLogoutSuccessHandler;
+import com.aibyd.appsys.component.AppsysUserDetailsService;
 import com.aibyd.appsys.utils.MD5Utils;
 import com.aibyd.appsys.utils.CommonUtils;
 
@@ -32,45 +40,72 @@ import com.aibyd.appsys.utils.CommonUtils;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private AppsysUserDetailsService userDetailsService;
+	private AppsysAuthenticationEntryPoint authenticationEntryPoint;	// 未登录时返回JSON格式的数据给前端,否则为html
 
 	@Autowired
-	private RabcFilterSecurityInterceptor rabcFilterSecurityInterceptor;
+	private AppsysAuthenticationSuccessHandler authenticationSuccessHandler;	// 登录成功返回JSON格式数据给前端,否则为html
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		super.configure(auth);
-	}
+	@Autowired
+	private AppsysAuthenticationFailureHandler authenticationFailureHandler;	// 登录失败返回JSON格式数据给前端,否则为html
+
+	@Autowired
+	private AppsysLogoutSuccessHandler logoutSuccessHandler;	// 注销成功返回JSON数据给前端,否则为登录页面html
+
+	@Autowired
+	private AppsysAccessDeniedHandler accessDeniedHandler;	// 无权访问返回JSON数据给前端, 否则为403 html页面
+
+	@Autowired
+	private AppsysAuthenticationTokenFilter authenticationTokenFilter;	// JWT拦截器
+
+	@Autowired
+	private AppsysUserDetailsService userDetailsService;
+
+	// @Autowired
+	// private RabcFilterSecurityInterceptor rabcFilterSecurityInterceptor;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/css/**", "/font-awesome/**", "/fonts/**", "/layui/**", "/img/**", "/js/**",
-						"/editor/**", "/login", "/auth")
-					.permitAll().anyRequest().authenticated()
-					.and()
-				.formLogin().loginPage("/login")
-					.loginProcessingUrl("/auth")
-					.usernameParameter("username")
-					.passwordParameter("password")
-					.defaultSuccessUrl("/index")
-					.and()
-				.headers()
-					.frameOptions()
-					.sameOrigin()
-					.and()
-				.logout()
-					.addLogoutHandler(logoutHandler())
-					.logoutSuccessUrl("/login")
-					.logoutSuccessHandler(logoutSuccessHandler())
-					.invalidateHttpSession(true)
-					.and()
-				.rememberMe()
-					.tokenValiditySeconds(1209600)
-					.and()
-				.csrf()
-					.disable();
-		http.addFilterBefore(rabcFilterSecurityInterceptor, FilterSecurityInterceptor.class);
+		http.csrf()
+				.disable()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+			.httpBasic()
+				.authenticationEntryPoint(authenticationEntryPoint)
+				.and()
+			.authorizeRequests()
+				.antMatchers("/css/**", "/fonts/**", "/layui/**", "/img/**", "/js/**",
+						"/editor/**", "/login", "/auth", "/index", "/main")
+				.permitAll()
+				.anyRequest()
+				.access("@appsysRbacAuthorityService.hasPermission(request, authentication)")
+				// .authenticated()
+				.and()
+			.formLogin()
+				.successHandler(authenticationSuccessHandler)
+				.failureHandler(authenticationFailureHandler)
+				.permitAll()
+				.loginPage("/login")
+				.loginProcessingUrl("/auth")
+				.usernameParameter("username")
+				.passwordParameter("password")
+				// .defaultSuccessUrl("/index")
+				.and()
+			// .headers()
+			// 	.frameOptions()
+			// 	.sameOrigin()
+			// 	.and()
+			.logout()
+				.addLogoutHandler(logoutHandler())
+				.logoutSuccessUrl("/login")
+				.logoutSuccessHandler(logoutSuccessHandler)
+				// .invalidateHttpSession(true)
+				.and()
+			.rememberMe()
+				.tokenValiditySeconds(300);
+		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+		http.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+		// http.addFilterBefore(rabcFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 	}
 
 	@Autowired
@@ -100,25 +135,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	// return new LoginSuccessHandler();
 	// }
 
-	@Bean
-	public LogoutSuccessHandler logoutSuccessHandler() {
-		return new LogoutSuccessHandler() {
+	// @Bean
+	// public LogoutSuccessHandler logoutSuccessHandler() {
+	// 	return new LogoutSuccessHandler() {
 
-			private final Logger LOGGER = LoggerFactory.getLogger(LogoutSuccessHandler.class);
+	// 		private final Logger LOGGER = LoggerFactory.getLogger(LogoutSuccessHandler.class);
 
-			@Override
-			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-					Authentication authentication) throws IOException, ServletException {
-				User userDetails = (User) authentication.getPrincipal();
-				StringBuffer sb = new StringBuffer();
-				sb.append(userDetails.getUsername());
-				sb.append(" logout success from ");
-				sb.append(CommonUtils.getIpFromRequest(request));
-				sb.append(".");
-				LOGGER.info(sb.toString());
-			}
-		};
-	}
+	// 		@Override
+	// 		public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+	// 				Authentication authentication) throws IOException, ServletException {
+	// 			User userDetails = (User) authentication.getPrincipal();
+	// 			StringBuffer sb = new StringBuffer();
+	// 			sb.append(userDetails.getUsername());
+	// 			sb.append(" logout success from ");
+	// 			sb.append(CommonUtils.getIpFromRequest(request));
+	// 			sb.append(".");
+	// 			LOGGER.info(sb.toString());
+	// 		}
+	// 	};
+	// }
 
 	private LogoutHandler logoutHandler() {
 		return new LogoutHandler() {
