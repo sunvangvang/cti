@@ -25,7 +25,6 @@ public class AppsysAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         AppsysResponseBody responseBody = new AppsysResponseBody();
 
-        String uri = request.getRequestURI();
         responseBody.setStatus("403");
         responseBody.setMsg("Need Authorities!");
 

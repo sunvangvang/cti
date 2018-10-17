@@ -2,14 +2,10 @@ package com.aibyd.mvc.config;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,14 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import com.aibyd.appsys.filter.RabcFilterSecurityInterceptor;
 import com.aibyd.appsys.component.AppsysAccessDeniedHandler;
 import com.aibyd.appsys.component.AppsysAuthenticationEntryPoint;
 import com.aibyd.appsys.component.AppsysAuthenticationFailureHandler;
@@ -33,7 +25,6 @@ import com.aibyd.appsys.component.AppsysAuthenticationTokenFilter;
 import com.aibyd.appsys.component.AppsysLogoutSuccessHandler;
 import com.aibyd.appsys.component.AppsysUserDetailsService;
 import com.aibyd.appsys.utils.MD5Utils;
-import com.aibyd.appsys.utils.CommonUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -75,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.authorizeRequests()
 				.antMatchers("/css/**", "/fonts/**", "/layui/**", "/img/**", "/js/**",
-						"/editor/**", "/login", "/auth", "/index", "/main")
+						"/editor/**", "/login", "/auth", "/index", "/index_new", "/main")
 				.permitAll()
 				.anyRequest()
 				.access("@appsysRbacAuthorityService.hasPermission(request, authentication)")
@@ -91,10 +82,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.passwordParameter("password")
 				// .defaultSuccessUrl("/index")
 				.and()
-			// .headers()
-			// 	.frameOptions()
-			// 	.sameOrigin()
-			// 	.and()
+			.headers()
+				.frameOptions()
+				.sameOrigin()
+				.and()
 			.logout()
 				.addLogoutHandler(logoutHandler())
 				.logoutSuccessUrl("/login")

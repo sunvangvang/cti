@@ -46,7 +46,7 @@ layui.use(["form", "layer", "jquery"], function() {
         setTimeout(function() {
             window.location.href = "/index";
         }, 1000) */
-        // return false;
+        return false;
     })
 
     // 表单输入效果
