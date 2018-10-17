@@ -1,0 +1,16 @@
+/* body */
+body,h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
+    font-family: "Microsoft YaHei";
+}
+
+.viewframe {
+    background-color: rgb(55, 61, 65);
+}
+
+.hasSidebar {
+    padding-left: 48px;
+}
+
+.hasTopbar {
+    padding-top: 50px;
+}
