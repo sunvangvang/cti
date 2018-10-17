@@ -65,7 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authenticationEntryPoint(authenticationEntryPoint)
 				.and()
 			.authorizeRequests()
-				.antMatchers("/css/**", "/fonts/**", "/layui/**", "/img/**", "/js/**",
+				.antMatchers("/css/**", "/fonts/**", "/layui/**", "/bootstrap/**", "/img/**", 
+						"/jquery/**", "/popper/**", "/js/**",
 						"/editor/**", "/login", "/auth", "/index", "/index_new", "/main")
 				.permitAll()
 				.anyRequest()
