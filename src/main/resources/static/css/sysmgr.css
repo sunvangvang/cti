@@ -1,0 +1,168 @@
+.console-frame, .console-frame .content, .console-frame .side {
+    height: 100%;
+}
+
+.console-frame .content, .console-frame .side {
+    position: relative;
+    overflow-x: visible;
+}
+
+.console-frame .side {
+    z-index: 10;
+    width: 180px;
+    float: left;
+    user-select: none;
+    background: #eaedf1;
+    padding-top: 70px;
+    transition-duration: .2s;
+}
+
+.console-frame .side .brand {
+    height: 70px;
+    line-height: 70px;
+    background: #d9dee4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 15px;
+    font-weight: 700;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.console-frame .side .menu {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.console-frame .side .menu li, .console-frame .side .menu ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    background-color: #eaedf1;
+}
+
+.console-frame .side .menu li:hover {
+    background-color: #f4f6f8;
+    cursor: pointer;
+}
+
+.console-frame .side .menu li.active {
+    background-color: #ffffff;
+}
+
+.console-frame .side .menu li>ul {
+    display: none;
+    color: #666666;
+}
+
+.console-frame .side .menu li>ul>li {
+    padding-left: 10px;
+}
+
+.console-frame .side .menu li.expand>ul {
+    display: block;
+}
+
+.console-frame .side .menu li .icon, .console-frame .side .menu li .text {
+    height: 40px;
+    line-height: 40px;
+}
+
+.console-frame .side .menu li .icon {
+    display: block;
+    width: 30px;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+}
+
+.console-frame .side .menu li .text {
+    color: #222222;
+    font-size: 12px;
+}
+
+.console-frame .side .toggle {
+    width: 20px;
+    height: 50px;
+    right: 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.console-frame .side .toggle .icon, .console-frame .side .toggle .shape {
+    transition-duration: .2s;
+}
+
+.console-frame .side .toggle .shape {
+    right: 0;
+    left: auto;
+    height: 50px;
+    border-bottom: 9px solid transparent;
+    border-left: none;
+    border-right: 13px solid #f7f7f7;
+    border-top: 9px solid transparent;
+}
+
+.console-frame .side .toggle .iconfont {
+    position: absolute;
+    top: 50%;
+    font-size: 16px;
+    line-height: 16px;
+    height: 16px;
+    margin-top: -8px;
+    left: 10px;
+    color: #546478;
+}
+
+.console-frame .side .toggle:hover .shape {
+    border-right-width: 20px;
+}
+
+.console-frame .side .toggle:hover .iconfont {
+    left: 3px;
+}
+
+.console-frame .side.collapse {
+    display: block;
+    margin-left: -180px;
+}
+
+.console-frame .side.collapse .toggle {
+    right: -20px;
+}
+
+.console-frame .side.collapse .toggle .shape {
+    left: 0;
+    right: auto;
+    height: 50px;
+    border-bottom: 9px solid transparent;
+    border-right: none;
+    border-left: 13px solid #d9dee4;
+    border-top: 9px solid transparent;
+}
+
+.console-frame .side.collapse .toggle .iconfont {
+    left: auto;
+    right: 10px;
+}
+
+.console-frame .side.collapse .toggle:hover .shape {
+    border-left-width: 20px;
+}
+
+.console-frame .side.collapse .toggle:hover .iconfont {
+    right: 3px;
+}
+
+.console-frame .content {
+    padding: 15px;
+    overflow-y: auto;
+    z-index: 0;
+    transition-duration: .2s;
+}

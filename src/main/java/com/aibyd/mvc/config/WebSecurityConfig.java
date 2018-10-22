@@ -67,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/css/**", "/fonts/**", "/layui/**", "/bootstrap/**", "/img/**", 
 						"/jquery/**", "/popper/**", "/js/**",
-						"/editor/**", "/login", "/auth", "/index", "/index_new", "/main")
+						"/editor/**", "/login", "/auth", "/index", "/main",
+						"/sysmgr")
 				.permitAll()
 				.anyRequest()
 				.access("@appsysRbacAuthorityService.hasPermission(request, authentication)")

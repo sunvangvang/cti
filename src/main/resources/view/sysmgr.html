@@ -12,8 +12,9 @@
         <meta name="format-detection" content="telephone=no">
         <link rel="icon" href="img/favicon.ico">
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="all">
-        <link rel="stylesheet" href="css/main.css" media="all">
         <link rel="stylesheet" href="fonts/iconfont.css" media="all">
+        <link rel="stylesheet" href="css/main.css" media="all">
+        <link rel="stylesheet" href="css/sysmgr.css" media="all">
     </head>
     <body class="hasTopbar hasSidebar" style="background-color:rgb(55, 61, 65);">
         <div id="console-bar" class="console-bar-container">
@@ -37,7 +38,7 @@
                             <div class="product-all">
                                 <div class="product-all-wrapper">
                                     <span class="product-all-icon-box">
-                                        <i class="iconfont icon-workbench_fill"></i>
+                                        <i class="iconfont icon-shitujuzhen"></i>
                                     </span>
                                     <span class="product-all-name">产品服务</span>
                                     <span class="sidebar-toolbar">
@@ -78,28 +79,57 @@
                                         </span>
                                     </span>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="console-frame" class="console-frame-container">
+        <div id="console-frame" class="console-frame-container" style="height: 100%;">
             <div data-reactroot class="console-frame">
                 <div class="side">
                     <div class="brand">系统管理</div>
                     <div class="menu">
                         <ul>
-                            <li class="active">
+                            <li class="">
                                 <span class="icon"></span>
                                 <div class="text">组织管理</div>
                             </li>
-                            <li>
+                            <li class="">
                                 <span class="icon"></span>
                                 <div class="text">用户管理</div>
                             </li>
+                            <li class="expand">
+                                <span class="icon">
+                                    <i class="iconfont icon-sanjiaodown"></i>
+                                </span>
+                                <div class="text">角色管理</div>
+                                <ul>
+                                    <li class="">
+                                        <span class="icon"></span>
+                                        <div class="text">one</div>
+                                    </li>
+                                    <li class="">
+                                        <span class="icon"></span>
+                                        <div class="text">two</div>
+                                    </li>
+                                    <li class="">
+                                        <span class="icon"></span>
+                                        <div class="text">three</div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="">
+                                <span class="icon">
+                                    <i class="iconfont icon-sanjiaoleft"></i>
+                                </span>
+                                <div class="text">菜单管理</div>
+                            </li>
                         </ul>
+                    </div>
+                    <div class="toggle">
+                        <i class="iconfont icon-sanjiao4"></i>
+                        <div class="shape"></div>
                     </div>
                 </div>
                 <div class="content"></div>
@@ -108,6 +138,6 @@
         <script src="jquery/jquery-3.3.1.min.js"></script>
         <script src="popper/popper.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script>
-        <script src="fonts/iconfont.js"></script>
+        <script src="js/sysmgr.js"></script>
     </body>
 </html>
